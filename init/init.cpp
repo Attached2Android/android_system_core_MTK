@@ -597,6 +597,26 @@ static void selinux_initialize(bool in_kernel_domain) {
     }
 }
 
+static int charging_mode_booting(void) {
+#ifndef BOARD_CHARGING_MODE_BOOTING_LPM
+    return 0;
+#else
+    int f;
+    char cmb;
+    f = open(BOARD_CHARGING_MODE_BOOTING_LPM, O_RDONLY);
+    if (f < 0)
+        return 0;
+
+    if (1 != read(f, (void *)&cmb,1)) {
+        close(f);
+        return 0;
+    }
+
+    close(f);
+    return ('8' == cmb);
+#endif
+}
+
 int main(int argc, char** argv) {
     if (!strcmp(basename(argv[0]), "ueventd")) {
         return ueventd_main(argc, argv);
