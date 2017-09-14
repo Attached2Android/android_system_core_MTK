@@ -12,6 +12,18 @@ endif
 
 init_options += -DLOG_UEVENTS=0
 
+ifneq ($(TARGET_INIT_COLDBOOT_TIMEOUT),)
+init_options += -DCOLDBOOT_TIMEOUT_OVERRIDE=$(TARGET_INIT_COLDBOOT_TIMEOUT)
+endif
+
+ifneq ($(TARGET_INIT_CONSOLE_TIMEOUT),)
+init_options += -DCONSOLE_TIMEOUT_SEC=$(TARGET_INIT_CONSOLE_TIMEOUT)
+endif
+
+ifeq ($(OLD_KERNEL),true)
+init_options += -Dold_kernel=\"$(TARGET_BOARD_PLATFORM)\"
+endif
+
 init_cflags += \
     $(init_options) \
     -Wall -Wextra \
