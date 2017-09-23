@@ -102,6 +102,8 @@ LOCAL_SRC_FILES := $(libcutils_common_sources) \
         qtaguid.c \
         trace-dev.c \
         uevent.c \
+        mtk_xlog.cpp \
+        mtk_audioCompat.c
 
 LOCAL_SRC_FILES_arm += arch-arm/memset32.S
 LOCAL_SRC_FILES_arm64 += arch-arm64/android_memset.S
@@ -127,7 +129,13 @@ endif
 
 LOCAL_C_INCLUDES := $(libcutils_c_includes)
 LOCAL_STATIC_LIBRARIES := liblog
-LOCAL_CFLAGS += -Werror -Wall -Wextra -std=gnu90
+ifneq ($(ENABLE_CPUSETS),)
+LOCAL_CFLAGS += -DUSE_CPUSETS
+endif
+ifneq ($(ENABLE_SCHEDBOOST),)
+LOCAL_CFLAGS += -DUSE_SCHEDBOOST
+endif
+LOCAL_CFLAGS += -Wall -Wextra -std=gnu90
 LOCAL_CLANG := true
 LOCAL_SANITIZE := integer
 include $(BUILD_STATIC_LIBRARY)
